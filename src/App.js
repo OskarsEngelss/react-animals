@@ -1,25 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const [zoodarzs, setZoodarzs] = useState([]);
+
+  useEffect(() => {
+    async function getData() {
+      const response = await fetch("animals.json");
+      const fetchedAnimals = await response.json();
+      setZoodarzs(fetchedAnimals);
+    }
+
+    getData();
+  }, []);
+
+  console.log(zoodarzs)
+  const renderZoodarzs = zoodarzs.map(singleAnimal => {
+    return (
+      <article>
+        <img src={singleAnimal["image"]} alt={singleAnimal["animal"]} />
+        <div class="info">
+          <h2>{singleAnimal["animal"]}</h2>
+          <p>{singleAnimal["description"]}</p>
+          <ul>
+            {singleAnimal["answers"].map(singleAnswer => 
+              <li>{singleAnswer}</li>
+            )}
+          </ul>
+        </div>
+      </article>
+    );
+  });
+
+  return <main>{renderZoodarzs}</main>;
 }
 
 export default App;
